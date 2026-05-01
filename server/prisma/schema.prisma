@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Patient {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  date               DateTime  @default(now())
+  placeOfResidence   String?
+  referencePerson    String?
+  age                Int
+  gender             String
+  natureOfWork       String?
+  height             Float?
+  weight             Float?
+  bmi                Float?
+  sleepPatterns      String?
+  diet               String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  diseases           Disease[]
+}
+
+model Disease {
+  id                       Int       @id @default(autoincrement())
+  patientId                Int
+  nameOfDisease            String?
+  chiefComplaint           String?
+  timePeriod               String?
+  onsetOfDisease           String?
+  symptoms                 String?
+  locationOfPain           String?
+  severity                 String?
+  recurrenceTiming         String?
+  aggravatingFactors       String?
+  typeOfDisease            String?
+  anatomicalReference      String?
+  physiologicalReference   String?
+  psychologicalReference   String?
+
+  patient                  Patient  @relation(fields: [patientId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  medicalHistory           MedicalHistory?
+  therapies                Therapy[]
+  medicalReports           MedicalReport[]
+}
+
+model MedicalHistory {
+  id                      Int      @id @default(autoincrement())
+  diseaseId               Int      @unique
+  childhoodIllness        String?
+  psychiatricIllness      String?
+  occupationalInfluences  String?
+  operationsOrSurgeries   String?
+  hereditary              Boolean  @default(false)
+
+  disease                 Disease  @relation(fields: [diseaseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  medicalReports          MedicalReport[]
+}
+
+model MedicalReport {
+  id               Int              @id @default(autoincrement())
+  filePath         String
+  diseaseId        Int?
+  medicalHistoryId Int?
+  createdAt        DateTime         @default(now())
+
+  disease          Disease?         @relation(fields: [diseaseId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  medicalHistory   MedicalHistory?  @relation(fields: [medicalHistoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+}
+
+model Therapy {
+  id                     Int       @id @default(autoincrement())
+  diseaseId              Int
+  name                   String
+  fitnessOrTherapy       String
+  homeRemedies           String?
+  dietReference          String?
+  lifestyleModifications String?
+  secondaryTherapy       String?
+  aggravatingPoses       String?
+  relievingPoses         String?
+  flexibilityLevel       String?
+  nerveStiffness         String?
+  muscleStiffness        String?
+  avoidablePoses         String?
+  therapyPoses           String?
+  sideEffects            String?
+  progressiveReport      String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  disease                Disease   @relation(fields: [diseaseId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  therapyTools           TherapyTools?
+}
+
+model TherapyTools {
+  id              Int       @id @default(autoincrement())
+  therapyId       Int       @unique
+  mantras         String?
+  meditationTypes String?
+  bandhas         String?
+
+  therapy         Therapy   @relation(fields: [therapyId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  yoga            Yoga?
+  pranayama       Pranayama?
+  mudras          Mudras?
+  breathing       BreathingExercises?
+}
+
+model Yoga {
+  id                     Int            @id @default(autoincrement())
+  therapyToolsId         Int            @unique
+  poses                  String?
+  repeatingTimingsPerDay Int?
+
+  therapyTools           TherapyTools   @relation(fields: [therapyToolsId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+model Pranayama {
+  id                     Int            @id @default(autoincrement())
+  therapyToolsId         Int            @unique
+  techniques             String?
+  repeatingTimingsPerDay Int?
+
+  therapyTools           TherapyTools   @relation(fields: [therapyToolsId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+model Mudras {
+  id                     Int            @id @default(autoincrement())
+  therapyToolsId         Int            @unique
+  mudraNames             String?
+  repeatingTimingsPerDay Int?
+
+  therapyTools           TherapyTools   @relation(fields: [therapyToolsId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}
+
+model BreathingExercises {
+  id                     Int            @id @default(autoincrement())
+  therapyToolsId         Int            @unique
+  exercises              String?
+  repeatingTimingsPerDay Int?
+
+  therapyTools           TherapyTools   @relation(fields: [therapyToolsId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+}

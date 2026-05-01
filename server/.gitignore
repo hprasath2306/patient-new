@@ -1,0 +1,6 @@
+node_modules/
+prisma/generated/
+.env
+*.db
+*.db-journal
+.DS_Store
