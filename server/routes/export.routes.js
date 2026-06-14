@@ -2,12 +2,10 @@ import { Router } from "express";
 import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const XLSX = require("xlsx");
-const archiver = require("archiver");
-const unzipper = require("unzipper");
-const multer = require("multer");
+import * as XLSX from "xlsx";
+import { ZipArchive } from "archiver";
+import * as unzipper from "unzipper";
+import multer from "multer";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { prisma } from "../prisma/client.js";
 
@@ -125,7 +123,7 @@ router.get(
     );
     res.setHeader("Content-Type", "application/zip");
 
-    const archive = archiver("zip", { zlib: { level: 9 } });
+    const archive = new ZipArchive({ zlib: { level: 9 } });
     archive.pipe(res);
 
     archive.append(JSON.stringify(data, null, 2), { name: "data.json" });
