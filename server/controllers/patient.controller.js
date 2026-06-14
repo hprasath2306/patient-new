@@ -1,9 +1,9 @@
 import * as patientService from "../services/patient.service.js";
 
 export async function list(req, res) {
-  const includeDiseases =
-    req.query.include === "diseases" || req.query.include === "all";
-  const rows = await patientService.listPatients({ includeDiseases });
+  const includeAll = req.query.include === "all";
+  const includeDiseases = includeAll || req.query.include === "diseases";
+  const rows = await patientService.listPatients({ includeDiseases, includeAll });
   res.json(rows);
 }
 

@@ -13,9 +13,11 @@ import {
   breathingRouter,
 } from "./modifier.routes.js";
 import * as mod from "../controllers/modifier.controller.js";
+import exportRoutes from "./export.routes.js";
 
 const router = Router();
 
+router.use("/export", exportRoutes);
 router.use("/patients", patientRoutes);
 router.use("/diseases", diseasesRouter);
 router.use("/medical-histories", medicalHistoriesRouter);

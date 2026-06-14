@@ -18,7 +18,32 @@ const patientSelect = {
   updatedAt: true,
 };
 
-export async function listPatients({ includeDiseases = false } = {}) {
+export async function listPatients({ includeDiseases = false, includeAll = false } = {}) {
+  if (includeAll) {
+    return prisma.patient.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        diseases: {
+          include: {
+            medicalHistory: true,
+            therapies: {
+              include: {
+                therapyTools: {
+                  include: {
+                    yoga: true,
+                    pranayama: true,
+                    mudras: true,
+                    breathing: true,
+                  },
+                },
+              },
+            },
+            medicalReports: true,
+          },
+        },
+      },
+    });
+  }
   return prisma.patient.findMany({
     orderBy: { createdAt: "desc" },
     select: {

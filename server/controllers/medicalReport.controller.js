@@ -17,7 +17,14 @@ export async function getById(req, res) {
 }
 
 export async function create(req, res) {
-  const row = await medicalReportService.createMedicalReport(req.body);
+  const body = { ...req.body };
+
+  if (req.file) {
+    body.filePath = `/uploads/${req.file.filename}`;
+    body.originalName = req.file.originalname;
+  }
+
+  const row = await medicalReportService.createMedicalReport(body);
   res.status(201).json(row);
 }
 
